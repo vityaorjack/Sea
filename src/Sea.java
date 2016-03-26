@@ -75,6 +75,7 @@ class MyPanel extends JPanel implements ActionListener{
 			//вода			
 			g.setColor(new Color(120,220,255));
 			g.fillRect(cube.okean.x, cube.okean.y, cube.okean.width, cube.okean.height);
+			//System.out.println(cube.okean.width);
 			//стены
 			g.setColor(Color.white);
 			for(Rectan rectangle:cube.rectangles){				
@@ -116,7 +117,11 @@ class Cube{
 		Cube(int x,int y,int width,int height){			
 				this.x=x;this.y=y;this.width=width;this.height=height;			
 			
-				okean=new Okean(this.width);			
+				okean=new Okean(this.width);
+				okean.x=x+30;okean.y=y+30;
+				
+				
+				
 				rectangles.add(new Rectan(x, y, true));
 				rectangles.add(new Rectan(x+30, y, false));
 				rectangles.add(new Rectan(x+30, y+500, false));
@@ -128,10 +133,12 @@ class Okean{
 	int x,y,width,height;
 	Okean(int width){
 		this.width=width;
+		
 	}
 }
 class Rectan{
-	int x,y,width=530,height=30,volum;	
+	int x,y,width=530,height=30,volum;
+	
 	Rectan(int x,int y,boolean location){
 		this.x=x;
 		this.y=y;
@@ -139,8 +146,7 @@ class Rectan{
 			volum=width;
 			width=height;
 			height=volum;
-		}
-		
+		}		
 	}
 	
 }
