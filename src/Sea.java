@@ -38,6 +38,8 @@ class MyPanel extends JPanel implements ActionListener{
 	Timer timer=new Timer(20,this);
 	Image im;
 	
+	
+	
 	MyPanel(){				
 		addMouseMotionListener( new MyMouse());
 		addMouseListener( new MyMouse());
@@ -47,11 +49,11 @@ class MyPanel extends JPanel implements ActionListener{
 			im = ImageIO.read(new File("Image/Sea.jpg"));
 		}catch(IOException exception){}
 		
-		cubes.add(new Cube());
+		cubes.add(new Cube(345,120,500,500));
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		
+		if(cubes.size()>0)cubes.get(0).okean.height++;
 		//player.click();
 		
 		repaint();	
@@ -68,11 +70,18 @@ class MyPanel extends JPanel implements ActionListener{
 		g.drawRoundRect(500,50,220,35,10,10);
 		g.drawString("Количество кликов: "+player.getClickCount(), 540, 70);
 		//комнаты
+		
 		for(Cube cube:cubes){
-			for(Rectangle rectangle:cube.rectangles){
+			//вода			
+			g.setColor(new Color(120,220,255));
+			g.fillRect(cube.okean.x, cube.okean.y, cube.okean.width, cube.okean.height);
+			//стены
+			g.setColor(Color.white);
+			for(Rectan rectangle:cube.rectangles){				
 				g.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 			}			
 		}
+		
 		
 	}
 	
@@ -100,21 +109,38 @@ class MyPanel extends JPanel implements ActionListener{
 
 
 class Cube{
-	int x,y;
-	ArrayList<Rectangle> rectangles=new ArrayList<Rectangle>();
-		Cube(){
-			for(int i=0;i<4;i++){
-				rectangles.add(new Rectan(x+480, y+200, false));
+	Okean okean;
+	int x,y,width,height;	
+	ArrayList<Rectan> rectangles=new ArrayList<Rectan>();
+	
+		Cube(int x,int y,int width,int height){			
+				this.x=x;this.y=y;this.width=width;this.height=height;			
+			
+				okean=new Okean(this.width);			
+				rectangles.add(new Rectan(x, y, true));
+				rectangles.add(new Rectan(x+30, y, false));
+				rectangles.add(new Rectan(x+30, y+500, false));
+				rectangles.add(new Rectan(x+530, y, true));
+			
 		}
+}
+class Okean{
+	int x,y,width,height;
+	Okean(int width){
+		this.width=width;
 	}
 }
-class Rectan extends Rectangle{
-	int x,y,width=520,height=520;
-	boolean location;
+class Rectan{
+	int x,y,width=530,height=30,volum;	
 	Rectan(int x,int y,boolean location){
 		this.x=x;
 		this.y=y;
-		this.location=location;
+		if(location){
+			volum=width;
+			width=height;
+			height=volum;
+		}
+		
 	}
 	
 }
