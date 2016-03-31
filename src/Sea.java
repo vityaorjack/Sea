@@ -32,11 +32,12 @@ class MyPanel extends JPanel implements ActionListener{
 	
 	Draw draw = new Draw();
 	Player player = new Player();
-	Rectangle key=new Rectangle(500,50,220,35);
-	ArrayList<Cube> cubes=new ArrayList<Cube>();
+	Rectangle key=new Rectangle(500,50,220,35);	
 	int x,y;//координаты мышки
-	Timer timer=new Timer(20,this);
+	int time;
+	Timer timer=new Timer(1,this);
 	Image im;
+	ArrayList<Rect> rects=new ArrayList<Rect>();
 	
 	
 	
@@ -48,12 +49,20 @@ class MyPanel extends JPanel implements ActionListener{
 		try{
 			im = ImageIO.read(new File("Image/Sea.jpg"));
 		}catch(IOException exception){}
+		//планки кают
+		for(int i=0;i<3;i++){
+			rects.add(new Rect());
+		}
 		
-		cubes.add(new Cube(345,120,500,500));
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if(cubes.size()>0)cubes.get(0).okean.height++;
+		
+		time++;
+		if(time>Okean.timer){
+			time=0;
+			Okean.movement();
+		}
 		//player.click();
 		
 		repaint();	
@@ -63,27 +72,23 @@ class MyPanel extends JPanel implements ActionListener{
 		super.paintComponent(g);
 		//фон
 		setBackground(new Color(120,220,255));
-		g.drawImage(im,375,150,null);
-		//������
+		g.drawImage(im,375,10,null);
+		
 		//g.fillOval(x, y, 10, 10);//
-		//������
+		
 		g.drawRoundRect(500,50,220,35,10,10);
 		g.drawString("Количество кликов: "+player.getClickCount(), 540, 70);
-		//комнаты
+		//вода			
+		g.setColor(new Color(0,95,140));
+		g.fillRect(Okean.x, Okean.y, Okean.width, Okean.height);
+		//стенки
+		g.setColor(Color.black);
 		
-		for(Cube cube:cubes){
-			//вода			
-			g.setColor(new Color(120,220,255));
-			g.fillRect(cube.okean.x, cube.okean.y, cube.okean.width, cube.okean.height);
-			//System.out.println(cube.okean.width);
-			//стены
-			g.setColor(Color.white);
-			for(Rectan rectangle:cube.rectangles){				
-				g.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-			}			
-		}
+		g.fillRect(345,0,30,1050);
+		g.fillRect(875,0,30,1050);
 		
-		
+		g.fillRect(355,-20,540,30);
+		g.fillRect(355,510,540,30);
 	}
 	
 	public class MyMouse extends MouseAdapter implements MouseMotionListener{				  				
@@ -107,48 +112,21 @@ class MyPanel extends JPanel implements ActionListener{
 		
 	}	 
 }
-
-
-class Cube{
-	Okean okean;
-	int x,y,width,height;	
-	ArrayList<Rectan> rectangles=new ArrayList<Rectan>();
-	
-		Cube(int x,int y,int width,int height){			
-				this.x=x;this.y=y;this.width=width;this.height=height;			
-			
-				okean=new Okean(this.width);
-				okean.x=x+30;okean.y=y+30;
-				
-				
-				
-				rectangles.add(new Rectan(x, y, true));
-				rectangles.add(new Rectan(x+30, y, false));
-				rectangles.add(new Rectan(x+30, y+500, false));
-				rectangles.add(new Rectan(x+530, y, true));
-			
-		}
-}
 class Okean{
-	int x,y,width,height;
-	Okean(int width){
-		this.width=width;
-		
+	static int x=375,y=350,width=500,height=1000;
+	static int timer=500;
+	
+	static void movement(){
+		y--;  height++;
 	}
 }
-class Rectan{
-	int x,y,width=530,height=30,volum;
+
+class Rect{
+	int x=355,y=-20,width=540,heigth=30;
 	
-	Rectan(int x,int y,boolean location){
-		this.x=x;
-		this.y=y;
-		if(location){
-			volum=width;
-			width=height;
-			height=volum;
-		}		
+	void movement(){
+		y++;
 	}
-	
 }
 
 /**
