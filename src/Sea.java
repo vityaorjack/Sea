@@ -32,7 +32,7 @@ class MyPanel extends JPanel implements ActionListener{
 	
 	Draw draw = new Draw();	
 	Rectangle key=new Rectangle(500,50,220,35);	
-	int x,y;//координаты мышки
+	int x,y;//координаты мышкиса
 	int time;
 	Timer timer=new Timer(1,this);
 	//игрок не бот
