@@ -60,7 +60,7 @@ class MyPanel extends JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		
-		//для ботов
+		//время для хода
 		for(Player player:players){
 			
 			time++;
