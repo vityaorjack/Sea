@@ -37,7 +37,7 @@ class MyPanel extends JPanel implements ActionListener{
 	Timer timer=new Timer(1,this);
 	//игрок не бот
 	boolean click;
-	int clicks;
+	int clicks,energy;
 	
 	ArrayList<Player> players=new ArrayList<Player>();	
 	ArrayList<Room> rooms=new ArrayList<Room>();
@@ -64,9 +64,9 @@ class MyPanel extends JPanel implements ActionListener{
 		for(Player player:players){
 			
 			time++;
-			if(time>player.timer){				
+			if(time>player.timer){			
 				time=0;
-				if(player.team)clicks++;
+				if(player.team & energy<3000){clicks++;    energy+=player.timer;}
 				else for(Room room:rooms)room.y++;				
 			}			
 		}
@@ -76,14 +76,11 @@ class MyPanel extends JPanel implements ActionListener{
 				System.out.println("+");	
 				for(int i=0;i<clicks;i++){
 					for(Room room:rooms)room.y--;
-					clicks--;
+					clicks--;    energy-=players.get(0).timer;
 				}
 				click=false;
 			}
 			
-		
-		
-		
 			//player.click();
 		
 		repaint();	
@@ -116,7 +113,10 @@ class MyPanel extends JPanel implements ActionListener{
 		}				
 		g.fillRect(345,0,30,1050);
 		g.fillRect(875,0,30,1050);
-		
+		//energy
+		g.drawRect(28, 98, 34, 304);
+		g.setColor(Color.green);
+		g.fillRect(30, 100, 30, energy/10);
 		
 	}
 	
