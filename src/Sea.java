@@ -35,8 +35,11 @@ class MyPanel extends JPanel implements ActionListener{
 	int x,y;//координаты мышки
 	int time;
 	Timer timer=new Timer(1,this);
+	//игрок не бот
+	boolean click;
+	int clicks;
 	
-	ArrayList<Player> players=new ArrayList<Player>();
+	ArrayList<Player> players=new ArrayList<Player>();	
 	ArrayList<Room> rooms=new ArrayList<Room>();
 	
 	
@@ -57,26 +60,36 @@ class MyPanel extends JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		
+		//для ботов
 		for(Player player:players){
 			
 			time++;
-			if(time>player.timer){
-				time=0;				
-				for(Room room:rooms){
-					if(!player.team)room.y--;
-					//else room.y++;
+			if(time>player.timer){				
+				time=0;
+				if(player.team)clicks++;
+				else for(Room room:rooms)room.y++;				
+			}			
+		}
+		//для играков
+		
+			if(click){
+				System.out.println("+");	
+				for(int i=0;i<clicks;i++){
+					for(Room room:rooms)room.y--;
+					clicks--;
 				}
-				
+				click=false;
 			}
 			
-		}
+		
+		
+		
 			//player.click();
 		
 		repaint();	
 	}
-	void movement(){
-		
-	}
+	
+	
 	
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
@@ -110,11 +123,10 @@ class MyPanel extends JPanel implements ActionListener{
 	public class MyMouse extends MouseAdapter implements MouseMotionListener{				  				
 		   
 		public void mousePressed(MouseEvent event){					
-				if(key.contains(event.getPoint())){
-					
+				if(key.contains(event.getPoint())){					
 					//player.click();
-					
-				}																	
+				}
+				click=true;
 		}		
 
 		public void mouseDragged(MouseEvent e) {
