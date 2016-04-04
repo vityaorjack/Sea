@@ -6,8 +6,15 @@
 */
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -17,21 +24,51 @@ import javax.swing.*;
 
 public class Sea {	
 	
-	public static void main(String[] args){		
+	static ArrayList <Client> clients=new ArrayList<Client>();
+	static Socket socket;
+	
+	public static void main(String[] args) throws IOException{		
 		MyFrame frame = new MyFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(1280,730);
 		frame.setTitle("Море");			
 		frame.show();
+		
+		ServerSocket server = new ServerSocket(8080);
+	      System.out.println("Server Started");
+	      try {
+	         while (true) {	           
+	            socket = server.accept();
+	            clients.add(new Client(socket));
+	         }
+	      }
+	      finally {System.out.println("Server Stoped");    server.close();}
 }}
+class Client{
+	
+	private BufferedReader in;
+	//Bim bim = new Bim();   
+	   
+	FileOutputStream fos;
+	ObjectInputStream oin;
+	ObjectOutputStream oos;
+
+	public Client(Socket socket) throws IOException {		
+	    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	}
+	
+}
+
+
+
+//сама игра непосредственно
+
 class MyFrame extends JFrame {
 
-	public MyFrame() {
-		setSize(1280,730);
-		MyPanel panel = new MyPanel();
-		Container pane = getContentPane();
-		pane.add(panel);
+	public MyFrame() {		
+		getContentPane().add(new MyPanel());
 		//Cursor c1 = Toolkit.getDefaultToolkit().createCustomCursor((new ImageIcon(new byte[0])).getImage(), new Point(0,0),	"custom");
-		//pane.setCursor(c1);
+		//getContentPane().setCursor(c1);
 	}
 }
 class MyPanel extends JPanel implements ActionListener{	
