@@ -6,13 +6,7 @@
 */
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -22,40 +16,70 @@ import javax.swing.*;
 
 
 
-public class Sea {	
+public class Sea implements Runnable{	
 	
+	Thread serverTread=new Thread(this);
 	static ArrayList <Client> clients=new ArrayList<Client>();
 	static Socket socket;
 	
-	public static void main(String[] args) throws IOException{		
+	public static void main(String[] args){		
 		MyFrame frame = new MyFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(1280,730);
+		frame.setSize(1280,530);
 		frame.setTitle("Море");			
 		frame.show();
 		
-		ServerSocket server = new ServerSocket(8080);
-	      System.out.println("Server Started");
+		
+	}
+	Sea(){
+		serverTread.start();
+	}
+
+	@Override
+	public void run() {
+		 ServerSocket server = null;
+		 System.out.println("Ss");
 	      try {
-	         while (true) {	           
-	            socket = server.accept();
-	            clients.add(new Client(socket));
-	         }
+	    	  
+	    	  server = new ServerSocket(8080);
+		      System.out.println("Server Started");
+	    	  
+		      while (true) {	           
+		    	  socket = server.accept();
+		    	  clients.add(new Client(socket));
+		      }
+	      } 
+	      catch (IOException e) {e.printStackTrace();}
+	      
+	      finally {
+	    	  System.out.println("Server Stoped");
+	    	  
+	    	  try {server.close();} 
+	    	  catch (IOException e) {e.printStackTrace();}
 	      }
-	      finally {System.out.println("Server Stoped");    server.close();}
-}}
+		
+	}
+}
 class Client{
 	
 	private BufferedReader in;
 	//Bim bim = new Bim();   
-	   
+	static int number;
+	
 	FileOutputStream fos;
 	ObjectInputStream oin;
 	ObjectOutputStream oos;
 
-	public Client(Socket socket) throws IOException {		
+	public Client(Socket socket) throws IOException {
+		
+		number++;
+		
 	    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	}
+	@Override
+    public String toString() {
+        return ""+number;
+    }
 	
 }
 
@@ -116,7 +140,7 @@ class MyPanel extends JPanel implements ActionListener{
 		//для играков
 		
 			if(click){
-				System.out.println("+");	
+					
 				for(int i=0;i<clicks;i++){
 					for(Room room:rooms)room.y--;
 					clicks--;    energy-=players.get(0).timer;
