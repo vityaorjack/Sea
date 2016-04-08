@@ -29,20 +29,19 @@ public class Sea {
 		thread.start();
 	}
 }
-class Server extends Thread{
+class Server extends Thread {	
 	
-	static ArrayList <Client> clients=new ArrayList<Client>();
 	static Socket socket;
 	ServerSocket server;
-	public void run(){
+	
+	public void run(){		
 		
 	      try {
 	    	  server = new ServerSocket(8080);
 		      System.out.println("Server Started");
 	         while (true) {	           
-	            socket = server.accept();
-	            clients.add(new Client(socket));
-	            System.out.println("run");
+	           socket = server.accept();
+	           new Client(socket);	            
 	         }
 	      } catch (IOException e) {e.printStackTrace();}
 	      finally {
@@ -51,22 +50,35 @@ class Server extends Thread{
 	    	  catch (IOException e) {e.printStackTrace();}
 	      }
 	}
+	
 }
 class Client{
 	
 	private BufferedReader in;
-	//Bim bim = new Bim();   
-	   
+	Bim bim = new Bim();   
+	static int number;
+	String name=""+number++;
+	
 	FileOutputStream fos;
 	ObjectInputStream oin;
 	ObjectOutputStream oos;
 
-	public Client(Socket socket) throws IOException {		
+	public Client(Socket socket) throws IOException {				
 	    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	}
-	
+	public String toString(){
+		return name;
+		
+	}
 }
-
+class Bim implements Serializable{	
+	int v; static volatile int w;
+	
+	Bim(){
+		
+	}
+			
+}
 
 
 //сама игра непосредственно
