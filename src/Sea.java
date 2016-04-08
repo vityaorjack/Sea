@@ -16,70 +16,54 @@ import javax.swing.*;
 
 
 
-public class Sea implements Runnable{	
+public class Sea {	
+	static Thread thread=new Thread(new Server());	
 	
-	Thread serverTread=new Thread(this);
-	static ArrayList <Client> clients=new ArrayList<Client>();
-	static Socket socket;
-	
-	public static void main(String[] args){		
+	public static void main(String[] args) throws IOException{		
 		MyFrame frame = new MyFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(1280,530);
+		frame.setSize(1280,730);
 		frame.setTitle("Море");			
 		frame.show();
 		
+		thread.start();
+	}
+}
+class Server extends Thread{
+	
+	static ArrayList <Client> clients=new ArrayList<Client>();
+	static Socket socket;
+	ServerSocket server;
+	public void run(){
 		
-	}
-	Sea(){
-		serverTread.start();
-	}
-
-	@Override
-	public void run() {
-		 ServerSocket server = null;
-		 System.out.println("Ss");
 	      try {
-	    	  
 	    	  server = new ServerSocket(8080);
 		      System.out.println("Server Started");
-	    	  
-		      while (true) {	           
-		    	  socket = server.accept();
-		    	  clients.add(new Client(socket));
-		      }
-	      } 
-	      catch (IOException e) {e.printStackTrace();}
-	      
+	         while (true) {	           
+	            socket = server.accept();
+	            clients.add(new Client(socket));
+	            System.out.println("run");
+	         }
+	      } catch (IOException e) {e.printStackTrace();}
 	      finally {
 	    	  System.out.println("Server Stoped");
-	    	  
 	    	  try {server.close();} 
 	    	  catch (IOException e) {e.printStackTrace();}
 	      }
-		
 	}
 }
 class Client{
 	
 	private BufferedReader in;
 	//Bim bim = new Bim();   
-	static int number;
-	
+	   
 	FileOutputStream fos;
 	ObjectInputStream oin;
 	ObjectOutputStream oos;
 
-	public Client(Socket socket) throws IOException {
-		
-		number++;
-		
+	public Client(Socket socket) throws IOException {		
 	    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	}
-	@Override
-    public String toString() {
-        return ""+number;
-    }
 	
 }
 
@@ -139,8 +123,7 @@ class MyPanel extends JPanel implements ActionListener{
 		}
 		//для играков
 		
-			if(click){
-					
+			if(click){					
 				for(int i=0;i<clicks;i++){
 					for(Room room:rooms)room.y--;
 					clicks--;    energy-=players.get(0).timer;
