@@ -52,10 +52,9 @@ class Server extends Thread {
 	}
 	
 }
-class Client{
-	
-	private BufferedReader in;
-	Bim bim = new Bim();   
+class Client extends Thread{
+	Socket socket;	
+	Bim bim;  
 	static int number;
 	String name=""+number++;
 	
@@ -63,9 +62,40 @@ class Client{
 	ObjectInputStream oin;
 	ObjectOutputStream oos;
 
-	public Client(Socket socket) throws IOException {				
-	    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	public Client(Socket socket) throws IOException {
+		this.socket=socket;	    
+	    start();
 	}
+	public void run() {
+		   while(true){
+	      try {     
+	    	  	System.out.println("name-"+name);
+	        	
+	    	  	oin = new ObjectInputStream(socket.getInputStream());
+				bim=(Bim) oin.readObject();
+	        	bim.w+=bim.v;bim.v=bim.w;	        	 
+	        	//b.strs.add(b.srt);
+	        	
+		        
+	        	 oos = new ObjectOutputStream(socket.getOutputStream());	         
+		         	oos.writeObject(bim);
+					oos.flush();						
+					//oos.close();         
+	        
+	      } catch (IOException | ClassNotFoundException e) {			
+			e.printStackTrace(); stop();			
+	      }
+		   }
+	      /*finally {
+	         try {
+	        	 System.out.println("Server Stoped !");
+	        	 socket.close();
+	         }catch (IOException e) {
+	            System.err.println("Socket not closed");
+	         }
+	      }*/
+		 
+	 }
 	public String toString(){
 		return name;
 		
